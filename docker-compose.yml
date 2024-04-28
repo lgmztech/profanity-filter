@@ -1,15 +1,6 @@
 version: '1.0'
 
 services:
-  # web:
-  #   image: golang:bullseye
-  #   env_file:
-  #     - ./.env
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./src:/usr/src/app
-  #   command: air ./cmd/main.go -b 0.0.0.0
   db:
     image: postgres:alpine
     environment:

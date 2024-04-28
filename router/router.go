@@ -7,13 +7,13 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 	defaultApi(app)
-	defaultRoutes(app)
+	helperRoutes(app)
 }
 
 func defaultApi(app *fiber.App) {
-	app.Get("/v1/:id", handlers.GETProfanityCheck)
+	app.Get("/v1/profanityfilter/:id", handlers.GETProfanityCheck)
 }
 
-func defaultRoutes(app *fiber.App) {
-	app.Get("/", handlers.GETHomeHandler)
+func helperRoutes(app *fiber.App) {
+	app.Get("/", handlers.GETProfanityFilterHelpHandler)
 }

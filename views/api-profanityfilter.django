@@ -1,0 +1,234 @@
+{% include "partials/header.django" %}
+
+<div class="col py-3">
+    <div class="container-fluid">
+        <h3 style="text-align: center;">How does this profanity filter work?</h3>
+        <p class="lead">
+            This filter is to be used as an API. Imagine you have a chat application and you want to be able to make sure
+            that in realtime you can check
+            a message for any profanity. All you would need to do with this is pass the message via the body it will check
+            for any banned words and then
+            it will return the censored message back to you.</p>
+
+        <br>
+        <h3>/v1/profanityfilter/{ID}</h3>
+        <hr>
+        <h4 style="color: purple;">HTTP GET</h4>
+        <p>
+            ID (Required) - this would be the api token that is associated with the account. In this version it is limited
+            with 10 calls.
+            Returns the censored version (bad words replaced with asterisks) of any given text and whether the text contains
+            profanity.
+        </p>
+
+        <h4 style="color: purple;">
+            Parameters
+        </h4>
+        <p>
+            text (required) - input text. Maximum 1000 characters.
+        </p>
+
+        <h4 style="color: purple;">
+            Body
+        </h4>
+        <p>
+            Message (required) - message that you would like to check for any banned words.
+        </p>
+
+        <h4 style="color: purple;">Sample Request URL <span
+                style="border: 1px solid green; background-color: green; color: white; border-radius: 10px; font-size: smaller; padding: 3px;">Live
+                Demo</span></h4>
+        <p>https://docs.lgomez.dev/v1/profanityfilter/{{UUID}}</p>
+        <p>Your Token ID: <span>{{UUID}}</span> - Max 10 Tries</p>
+        <form hx-get="/v1/profanityfilter/{{UUID}}" hx-target="#userFilterTest">
+            <input type="text" name="userMessage" value="You damn hooligan!">
+            <button type="submit">Send Request</button>
+        </form>
+
+        <br>
+        <h4 style="color: purple;">
+            Sample Response
+        </h4>
+        <div>
+            <pre tabindex="0">
+                <code id="userFilterTest"><br>{"has-profanity":true,"modified-message":"You **** hooligan!","original-message":"You damn hooligan!"}</code>
+            </pre>
+        </div>
+
+        <br>
+        <h4 style="color: purple;">
+            Code Examples
+        </h4>
+
+        <div id="golangExample">
+            <button class="btn btn-dark px-3" type="button">Golang</button>
+            <pre>
+                <code>
+                    package main
+                    
+                    import (
+                        "fmt"
+                        "net/http"
+                        "io/ioutil"
+                        )
+                        
+                        func main() {
+                            url := "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}"
+                            message := `{"userMessage":"You damn hooligan"}`
+                            
+                            req, _ := http.NewRequest("GET", url, nil)
+                            req.Body = ioutil.NopCloser(strings.NewReader(message))
+                            
+                            client := &http.Client{}
+                            resp, err := client.Do(req)
+                            if err != nil {
+                                fmt.Println("Error:", err)
+                                return
+                            }
+                            defer resp.Body.Close()
+                            
+                            body, _ := ioutil.ReadAll(resp.Body)
+                            fmt.Println(string(body))
+                        }
+                    </code>
+                </pre>
+            </div>
+            <div id="pythonExample">
+                <button class="btn btn-dark px-3" type="button">Python</button>
+                <pre>
+                    <code>
+                        import requests
+                        
+                        url = "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}"
+                        message = '{"userMessage":"You damn hooligan"}'
+                        
+                        response = requests.get(url, data=message)
+                        print(response.text)
+                    </code>
+                </pre>
+            </div>
+            <div id="javaExample">
+                <button class="btn btn-dark px-3" type="button">Java</button>
+                <pre>
+                    <code>
+                        import java.io.IOException;
+                        import java.net.HttpURLConnection;
+                        import java.net.URL;
+                        import java.io.OutputStream;
+                        
+                        public class Main {
+                            public static void main(String[] args) throws IOException {
+                                String url = "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}";
+                                String message = "{\"userMessage\":\"You damn hooligan\"}";
+                                
+                                URL obj = new URL(url);
+                                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                                
+                                con.setRequestMethod("GET");
+                                con.setDoOutput(true);
+                                try (OutputStream os = con.getOutputStream()) {
+                                    byte[] input = message.getBytes("utf-8");
+                                    os.write(input, 0, input.length);
+                                }
+                                
+                                int responseCode = con.getResponseCode();
+                                if (responseCode == HttpURLConnection.HTTP_OK) { // success
+                                    try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                                        String inputLine;
+                                        StringBuffer response = new StringBuffer();
+                                        while ((inputLine = in.readLine()) != null) {
+                                            response.append(inputLine);
+                                        }
+                                        System.out.println(response.toString());
+                                    }
+                                } else {
+                                    System.out.println("GET request failed");
+                                }
+                            }
+                        }
+                    </code>
+                </pre>
+            </div>
+            <div id="swiftExample">
+                <button class="btn btn-dark px-3" type="button">Swift</button>
+                <pre>
+                    <code>
+                        import Foundation
+                        
+                        let url = URL(string: "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}")!
+                        var request = URLRequest(url: url)
+                        request.httpMethod = "GET"
+                        let message = "{\"userMessage\":\"You damn hooligan\"}"
+                        request.httpBody = message.data(using: .utf8)
+                        
+                        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                            if let data = data {
+                                if let result = String(data: data, encoding: .utf8) {
+                                    print(result)
+                                }
+                            } else if let error = error {
+                                print("Error: \(error)")
+                            }
+                        }
+                        
+                        task.resume()
+                    </code>
+                </pre>
+            </div>
+            <div id="javascriptExample">
+                <button class="btn btn-dark px-3" type="button">Javascript</button>
+                <pre>
+                    <code>
+                        const fetch = require("node-fetch");
+                        
+                        const url = "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}";
+                        const message = JSON.stringify({ userMessage: "You damn hooligan" });
+                        
+                        fetch(url, {
+                            method: "GET",
+                            body: message,
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => console.log(data))
+                        .catch(error => console.error("Error:", error));
+                    </code>
+                </pre>
+            </div>
+            <div id="phpExample">
+                <button class="btn btn-dark px-3" type="button">PHP</button>
+                <pre>
+                    <code>
+                        <?php
+                        $url = "https://www.lgmztech.com/v1/profanityfilter/{{UUID}}";
+                        $message = '{"userMessage":"You damn hooligan"}';
+                        
+                        $options = array(
+                            'http' => array(
+                                'method'  => 'GET',
+                                'header'  => 'Content-type: application/json',
+                            'content' => $message
+                        )
+                    );
+                    
+                    $context  = stream_context_create($options);
+                    $response = file_get_contents($url, false, $context);
+                    
+                    if ($response === false) {
+                        echo "Error fetching data";
+                    } else {
+                        echo $response;
+                    }
+                    ?> 
+                </code>
+            </pre>
+        </div>
+            
+
+        <p>If your programming language is not listed in the Code Example above, you can still make API calls by using a
+            HTTP request library written in your programming language and following the above documentation.</p>
+    </div>
+
+{% include "partials/footer.django" %}

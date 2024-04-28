@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/lgmztech/profanity-filter/models"
 )
@@ -29,7 +27,6 @@ func CheckForValidToken(accessToken string) (*models.RateLimitedModel, error) {
 
 	hasBeenLimited := checkIfLimitReached(findToken)
 	if hasBeenLimited {
-		fmt.Println("limit reached")
 		return findToken, fiber.ErrLocked
 	}
 

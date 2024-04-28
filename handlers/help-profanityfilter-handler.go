@@ -9,31 +9,26 @@ import (
 	"github.com/lgmztech/profanity-filter/middleware"
 )
 
-func GETHomeHandler(c *fiber.Ctx) error {
-	var userUUID string
+func GETProfanityFilterHelpHandler(c *fiber.Ctx) error {
 	cookie := c.Cookies("auth_token")
-
-	fmt.Println(cookie)
-
 	validatedCookie := middleware.ValidateJWT(cookie)
-
-	fmt.Println(validatedCookie)
 
 	if validatedCookie == "" {
 		userUUID := uuid.New()
-		middleware.GenerateJWT(userUUID.String())
+		newJWTToken := middleware.GenerateJWT(userUUID.String())
 		database.CreateNewToken(userUUID.String())
 		fmt.Println(userUUID.String())
 
 		cookie := fiber.Cookie{
 			Name:  "auth_token",
-			Value: validatedCookie,
+			Value: newJWTToken,
 		}
 
 		c.Cookie(&cookie)
+		validatedCookie = userUUID.String()
 	}
 
-	return c.JSON(fiber.Map{
-		"user-token": userUUID,
+	return c.Render("help-profanityfilter", fiber.Map{
+		"UUID": validatedCookie,
 	})
 }
